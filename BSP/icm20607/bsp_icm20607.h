@@ -4,7 +4,7 @@
 
 #include "AllHeader.h"
 
-/* ÏòÁ¿ */
+/* å‘é‡ */
 typedef struct _vector_t
 {
     float x;
@@ -12,7 +12,7 @@ typedef struct _vector_t
     float z;
 } vector_t;
 
-/* ×ËÌ¬½Ç */
+/* å§¿æ€è§’ */
 typedef struct _attitude_t
 {
     float roll;
@@ -21,7 +21,7 @@ typedef struct _attitude_t
 } attitude_t;
 
 typedef struct _quaternion_t
-{ //ËÄÔªÊı
+{ //å››å…ƒæ•°
     float q0;
     float q1;
     float q2;
@@ -43,7 +43,7 @@ typedef struct _icm_data_t
 extern attitude_t g_attitude;
 extern icm_data_t g_icm20607;
 
-#define     ICM_ADDRESS        0x69<<1  //AD0:0¼´0x68<<1  1¼´0x69<<1
+#define     ICM_ADDRESS        0x69<<1  //AD0:0å³0x68<<1  1å³0x69<<1
 #define     ICM20607_ID        0x05
 #define     XG_OFFS_TC_H       0x04
 #define     XG_OFFS_TC_L       0x05

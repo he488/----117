@@ -3,12 +3,12 @@
 
 #include "AllHeader.h"
 
-//-----------------²âÊÔLED¶Ë¿Ú¶¨Òå---------------- 
+//-----------------æµ‹è¯•LEDç«¯å£å®šä¹‰---------------- 
 
 #define OLED_SCL  GPIO_Pin_8
 #define OLED_SDA  GPIO_Pin_9
 
-//-----------------OLED¶Ë¿Ú¶¨Òå---------------- 
+//-----------------OLEDç«¯å£å®šä¹‰---------------- 
 
 #define OLED_SCL_Clr() GPIO_ResetBits(GPIOB,OLED_SCL)//SCL
 #define OLED_SCL_Set() GPIO_SetBits(GPIOB,OLED_SCL)
@@ -20,8 +20,8 @@
 //#define OLED_RES_Set() GPIO_SetBits(GPIOD,GPIO_Pin_2)
 
 
-#define OLED_CMD  0	//Ğ´ÃüÁî
-#define OLED_DATA 1	//Ğ´Êı¾İ
+#define OLED_CMD  0	//å†™å‘½ä»¤
+#define OLED_DATA 1	//å†™æ•°æ®
 
 void OLED_ClearPoint(u8 x,u8 y);
 void OLED_ColorTurn(u8 i);

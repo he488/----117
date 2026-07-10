@@ -3,9 +3,9 @@
 
 #include "AllHeader.h"
 
-//#define MOTOR_A_IN1_PORT  GPIOB                /* GPIO端口 */
-//#define MOTOR_A_IN1_PIN   GPIO_Pin_0          /* GPIO编号 */
-//#define MOTOR_A_IN1_CLK   RCC_APB2Periph_GPIOB /* GPIO端口时钟 */
+//#define MOTOR_A_IN1_PORT  GPIOB                /* GPIO绔彛 */
+//#define MOTOR_A_IN1_PIN   GPIO_Pin_0          /* GPIO缂栧彿 */
+//#define MOTOR_A_IN1_CLK   RCC_APB2Periph_GPIOB /* GPIO绔彛鏃堕挓 */
 //#define MOTOR_A_IN2_PORT  GPIOB
 //#define MOTOR_A_IN2_PIN   GPIO_Pin_1
 //#define MOTOR_A_IN2_CLK   RCC_APB2Periph_GPIOB

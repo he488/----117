@@ -3,7 +3,7 @@
 
 #include "AllHeader.h"
 
-/*³¬Éù²¨´«¸ÐÆ÷*/
+/*è¶…å£°æ³¢ä¼ æ„Ÿå™¨*/
 
 #define TRIG_RCC		RCC_APB2Periph_GPIOA
 #define ECHO_RCC		RCC_APB2Periph_GPIOA

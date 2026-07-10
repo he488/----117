@@ -12,8 +12,8 @@
 //static int g_offset_yaw = 0;
 uint16_t g_speed_setup = 0;
 
-//// X轴速度(前正后负：±1000)，Y轴速度(左正右负：±1000)，旋转速度(左正右负：±5000)
-//// X3 PLUS X轴速度(前正后负：±700)，Y轴速度(左正右负：±700)，旋转速度(左正右负：±3200)
+//// X杞撮€熷害(鍓嶆鍚庤礋锛毬?000)锛孻杞撮€熷害(宸︽鍙宠礋锛毬?000)锛屾棆杞€熷害(宸︽鍙宠礋锛毬?000)
+//// X3 PLUS X杞撮€熷害(鍓嶆鍚庤礋锛毬?00)锛孻杞撮€熷害(宸︽鍙宠礋锛毬?00)锛屾棆杞€熷害(宸︽鍙宠礋锛毬?200)
 //void Mecanum_Ctrl(int16_t V_x, int16_t V_y, int16_t V_z, uint8_t adjust)
 //{
 //    float robot_APB = Motion_Get_APB();
@@ -58,13 +58,13 @@ uint16_t g_speed_setup = 0;
 
 
 
-//// 通过偏航角计算当前的偏差值，校准小车运动方向。
+//// 閫氳繃鍋忚埅瑙掕绠楀綋鍓嶇殑鍋忓樊鍊硷紝鏍″噯灏忚溅杩愬姩鏂瑰悜銆?
 //void Mecanum_Yaw_Calc(float yaw)
 //{
 //    float yaw_offset = PID_Yaw_Calc(yaw);
 //    g_offset_yaw = yaw_offset * g_speed_setup;
 
-//    // 用于调试打印偏差数据
+//    // 鐢ㄤ簬璋冭瘯鎵撳嵃鍋忓樊鏁版嵁
 //    // static int aaaaaaaaa = 0;
 //    // aaaaaaaaa++;
 //    // if (aaaaaaaaa > 5)
@@ -89,9 +89,9 @@ uint16_t g_speed_setup = 0;
 //    Motion_Set_Speed(speed_L1, speed_L2, speed_R1, speed_R2);
 //}
 
-//// 控制麦克纳姆轮小车运动状态。 
-//// 速度控制：speed=0~1000。
-//// 偏航角调节运动：adjust=1开启，=0不开启。
+//// 鎺у埗楹﹀厠绾冲杞皬杞﹁繍鍔ㄧ姸鎬併€?
+//// 閫熷害鎺у埗锛歴peed=0~1000銆?
+//// 鍋忚埅瑙掕皟鑺傝繍鍔細adjust=1寮€鍚紝=0涓嶅紑鍚€?
 //void Mecanum_State(uint8_t state, uint16_t speed, uint8_t adjust)
 //{
 //    Motion_Set_Yaw_Adjust(adjust);

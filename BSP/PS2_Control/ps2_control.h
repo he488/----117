@@ -24,16 +24,16 @@
 
 
 
-#define DI   PCin(15)           //PC15  ÊäÈë
+#define DI   PCin(15)           //PC15  è¾“å…¥
 
-#define DO_H PCout(14)=1        //ÃüÁîÎ»¸ß
-#define DO_L PCout(14)=0        //ÃüÁîÎ»µÍ
+#define DO_H PCout(14)=1        //å‘½ä»¤ä½é«˜
+#define DO_L PCout(14)=0        //å‘½ä»¤ä½ä½
 
-#define CS_H PAout(12)=1       //CSÀ­¸ß
-#define CS_L PAout(12)=0       //CSÀ­µÍ
+#define CS_H PAout(12)=1       //CSæ‹‰é«˜
+#define CS_L PAout(12)=0       //CSæ‹‰ä½
 
-#define CLC_H PCout(13)=1      //Ê±ÖÓÀ­¸ß
-#define CLC_L PCout(13)=0      //Ê±ÖÓÀ­µÍ
+#define CLC_H PCout(13)=1      //æ—¶é’Ÿæ‹‰é«˜
+#define CLC_L PCout(13)=0      //æ—¶é’Ÿæ‹‰ä½
 
 
 //These are our button constants
@@ -60,12 +60,12 @@
 
 
 //These are stick values
-#define PSS_RX 5                //ÓÒÒ¡¸ËXÖáÊı¾İ
+#define PSS_RX 5                //å³æ‘‡æ†Xè½´æ•°æ®
 #define PSS_RY 6
 #define PSS_LX 7
 #define PSS_LY 8
 
-/*Ğ¡³µÔËĞĞ×´Ì¬Ã¶¾Ù*/
+/*å°è½¦è¿è¡ŒçŠ¶æ€æšä¸¾*/
 enum{
   enSTOP = 0,
   enRUN,
@@ -88,9 +88,9 @@ extern u16 MASK[16];
 extern u16 Handkey;
 
 void PS2_Init(void);
-u8 PS2_DataKey(void);		  //¼üÖµ¶ÁÈ¡
-u8 PS2_AnologData(u8 button); //µÃµ½Ò»¸öÒ¡¸ËµÄÄ£ÄâÁ¿
-void PS2_ClearData(void);	  //Çå³ıÊı¾İ»º³åÇø
+u8 PS2_DataKey(void);		  //é”®å€¼è¯»å–
+u8 PS2_AnologData(u8 button); //å¾—åˆ°ä¸€ä¸ªæ‘‡æ†çš„æ¨¡æ‹Ÿé‡
+void PS2_ClearData(void);	  //æ¸…é™¤æ•°æ®ç¼“å†²åŒº
 
 void app_ps2_deal(void);
 void app_CarstateOutput(void);

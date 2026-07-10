@@ -5,8 +5,8 @@
 * Function       // imu_test
 * @author       // yahboom--
 * @date         //  2023.02.22   
-* @brief         // ¼ì²âIMUµÄÊı¾İ
-* @param[in]     // ÎŞ
+* @brief         // æ£€æµ‹IMUçš„æ•°æ®
+* @param[in]     // æ— 
 * @param[out]    // none
 * @retval        // NONE
 * @par History   // v0.0
@@ -21,7 +21,7 @@ void imu_test(void)
 //	int16_t val_ay = 0;
 //	int16_t val_az = 0;
 //	
-//	//ÍÓÂİÒÇ²âÊÔ
+//	//é™€èºä»ªæµ‹è¯•
 		get_icm_attitude();
 //		
 //			
@@ -30,7 +30,7 @@ void imu_test(void)
 		val_gz = getRawGyroscopeZ();
 //		
 //		
-//		//¼ÓËÙ¶È
+//		//åŠ é€Ÿåº¦
 //		val_ax = getRawAccelerationX();
 //		val_ay = getRawAccelerationY();
 //		val_az = getRawAccelerationZ();

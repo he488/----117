@@ -3,13 +3,13 @@
 void init_RGB_GPIO(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
- 	RCC_APB2PeriphClockCmd(RGB_CLK, ENABLE);	 //Ê¹ÄÜC¶Ë¿ÚÊ±ÖÓ
+ 	RCC_APB2PeriphClockCmd(RGB_CLK, ENABLE);	 //ä½¿èƒ½Cç«¯å£æ—¶é’Ÿ
 	GPIO_InitStructure.GPIO_Pin = RGB_LED_R_PIN|RGB_LED_G_PIN|RGB_LED_B_PIN;	 
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //ÍÆÍìÊä³ö
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;//ËÙ¶È2MHz
- 	GPIO_Init(RGB_PORT, &GPIO_InitStructure);	  //³õÊ¼»¯GPIOC
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //æ¨æŒ½è¾“å‡º
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;//é€Ÿåº¦2MHz
+ 	GPIO_Init(RGB_PORT, &GPIO_InitStructure);	  //åˆå§‹åŒ–GPIOC
 	
- 	GPIO_SetBits(RGB_PORT,RGB_LED_R_PIN|RGB_LED_G_PIN|RGB_LED_B_PIN);//¸ßµçÆ½¹ØµÆ
+ 	GPIO_SetBits(RGB_PORT,RGB_LED_R_PIN|RGB_LED_G_PIN|RGB_LED_B_PIN);//é«˜ç”µå¹³å…³ç¯
 }
 	
 	
@@ -18,17 +18,17 @@ void init_RGB_GPIO(void)
 void init_LED_GPIO(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
- 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);	 //Ê¹ÄÜC¶Ë¿ÚÊ±ÖÓ
+ 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);	 //ä½¿èƒ½Cç«¯å£æ—¶é’Ÿ
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11;	 
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //ÍÆÍìÊä³ö
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;//ËÙ¶È2MHz
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);	  //³õÊ¼»¯GPIOC
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //æ¨æŒ½è¾“å‡º
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;//é€Ÿåº¦2MHz
+ 	GPIO_Init(GPIOB, &GPIO_InitStructure);	  //åˆå§‹åŒ–GPIOC
 	
  	GPIO_ResetBits(GPIOB,GPIO_Pin_10|GPIO_Pin_11);
 
 }	
 
-//ÉèÖÃ RGBµÆ ÑÕÉ«
+//è®¾ç½® RGBç¯ é¢œè‰²
 void RGB_control(u8 color)
 {
 	switch(color)

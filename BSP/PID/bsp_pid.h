@@ -18,31 +18,31 @@
 
 typedef struct _pid
 {
-    float target_val;               //目标值
-    float output_val;               //输出值
-    float pwm_output;        		//PWM输出值
-    float Kp,Ki,Kd;          		//定义比例、积分、微分系数
-    float err;             			//定义偏差值
-    float err_last;          		//定义上一个偏差值
+    float target_val;               //鐩爣鍊?
+    float output_val;               //杈撳嚭鍊?
+    float pwm_output;        		//PWM杈撳嚭鍊?
+    float Kp,Ki,Kd;          		//瀹氫箟姣斾緥銆佺Н鍒嗐€佸井鍒嗙郴鏁?
+    float err;             			//瀹氫箟鍋忓樊鍊?
+    float err_last;          		//瀹氫箟涓婁竴涓亸宸€?
 
-    float err_next;                 //定义下一个偏差值, 增量式
-    float integral;          		//定义积分值，位置式
+    float err_next;                 //瀹氫箟涓嬩竴涓亸宸€? 澧為噺寮?
+    float integral;          		//瀹氫箟绉垎鍊硷紝浣嶇疆寮?
 } pid_t;
 
 typedef struct _motor_data_t
 {
-    float speed_mm_s[4];        // 输入值，编码器计算速度
-    float speed_pwm[4];         // 输出值，PID计算出PWM值
-    int16_t speed_set[4];       // 速度设置值
+    float speed_mm_s[4];        // 杈撳叆鍊硷紝缂栫爜鍣ㄨ绠楅€熷害
+    float speed_pwm[4];         // 杈撳嚭鍊硷紝PID璁＄畻鍑篜WM鍊?
+    int16_t speed_set[4];       // 閫熷害璁剧疆鍊?
 } motor_data_t;
 
 
 typedef struct
 {
-    float SetPoint;   // 设定目标Desired value
-    float Proportion; // 比例常数Proportional Const
-    float Integral;   // 积分常数Integral Const
-    float Derivative; // 微分常数Derivative Const
+    float SetPoint;   // 璁惧畾鐩爣Desired value
+    float Proportion; // 姣斾緥甯告暟Proportional Const
+    float Integral;   // 绉垎甯告暟Integral Const
+    float Derivative; // 寰垎甯告暟Derivative Const
     float LastError;  // Error[-1]
     float PrevError;  // Error[-2]
     float SumError;   // Sums of Errors
