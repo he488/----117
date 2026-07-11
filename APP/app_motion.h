@@ -4,20 +4,20 @@
 #include "stdint.h"
 #include "AllHeader.h"
 
-// 205RPM鐢垫満锛岃疆瀛愯浆涓€鏁村湀锛岀紪鐮佸櫒鑾峰緱鐨勮剦鍐叉暟=鍑忛€熸瘮*鐮佺洏绾挎暟*缂栫爜鍣ㄨ剦鍐诧紙56*11*4锛?
+// 205RPM电机，轮子转一整圈，编码器获得的脉冲数=减速比*码盘线数*编码器脉冲（56*11*4）
 #define ENCODER_CIRCLE_205           (2464.0f)
 
-// 330RPM鐢垫満锛岃疆瀛愯浆涓€鏁村湀锛岀紪鐮佸櫒鑾峰緱鐨勮剦鍐叉暟=鍑忛€熸瘮*鐮佺洏绾挎暟*缂栫爜鍣ㄨ剦鍐诧紙30*11*4锛?
+// 330RPM电机，轮子转一整圈，编码器获得的脉冲数=减速比*码盘线数*编码器脉冲（30*11*4）
 #define ENCODER_CIRCLE_330           (1320.0f)
 
-// 550RPM鐢垫満锛岃疆瀛愯浆涓€鏁村湀锛岀紪鐮佸櫒鑾峰緱鐨勮剦鍐叉暟=鍑忛€熸瘮*鐮佺洏绾挎暟*缂栫爜鍣ㄨ剦鍐诧紙19*11*4锛?
+// 550RPM电机，轮子转一整圈，编码器获得的脉冲数=减速比*码盘线数*编码器脉冲（19*11*4）
 #define ENCODER_CIRCLE_550           (836.0f)
 
-// 杞瓙杞竴鏁村湀鐨勪綅绉伙紝鍗曚綅涓虹背
+// 轮子转一整圈的位移，单位为米
 #define DISTANCE_CIRCLE      (0.204203)
 
 
-// 鍋滄妯″紡锛孲TOP_FREE琛ㄧず鑷敱鍋滄锛孲TOP_BRAKE琛ㄧず鍒硅溅銆?
+// 停止模式，STOP_FREE表示自由停止，STOP_BRAKE表示刹车。
 typedef enum _stop_mode {
     STOP_FREE = 0,
     STOP_BRAKE
@@ -48,41 +48,41 @@ typedef struct _car_data
 
 typedef enum _car_type
 {
-    CAR_TYPE_NONE = 0x00,       // 淇濈暀
-    CAR_MECANUM = 0x01,         // 灏忔灦鏋勫皬楹﹁疆 X3
-    CAR_MECANUM_MAX = 0x02,     // 澶ф灦鏋勫ぇ楹﹁疆 X3 PLUS
-    CAR_MECANUM_MINI = 0x03,    // 澶ф灦鏋勫皬楹﹁疆 鏃?
-    CAR_FOURWHEEL = 0x04,       // 鍥涜疆鏅€氬皬杞?X1
-    CAR_ACKERMAN = 0x05,        // 闃垮厠鏇煎皬杞?  R2
+    CAR_TYPE_NONE = 0x00,       // 保留
+    CAR_MECANUM = 0x01,         // 小架构小麦轮 X3
+    CAR_MECANUM_MAX = 0x02,     // 大架构大麦轮 X3 PLUS
+    CAR_MECANUM_MINI = 0x03,    // 大架构小麦轮 无
+    CAR_FOURWHEEL = 0x04,       // 四轮普通小车 X1
+    CAR_ACKERMAN = 0x05,        // 阿克曼小车  R2
 
-    CAR_TYPE_MAX                // 鏈€鍚庝竴涓皬杞︾被鍨嬶紝浠呬綔涓哄垽鏂?
+    CAR_TYPE_MAX                // 最后一个小车类型，仅作为判断
 } car_type_t;
 
 
-// 鐢垫満缂栧彿
+// 电机编号
 typedef enum {
-    MOTOR_M1 = 0,  // 宸﹀墠
-    MOTOR_M2,      // 宸﹀悗
-    MOTOR_M3,      // 鍙冲墠
-    MOTOR_M4       // 鍙冲悗
+    MOTOR_M1 = 0,  // 左前
+    MOTOR_M2,      // 左后
+    MOTOR_M3,      // 右前
+    MOTOR_M4       // 右后
 } MotorID;
  
-// 浠诲姟鍛戒护
+// 任务命令
 typedef struct {
-    uint8_t command;       // 1=鍓嶈繘, 2=宸﹁浆, 3=鍙宠浆, 4=鍋滄
-    int16_t pwm;           // 鍩虹 PWM 鍊?
-    int32_t encoder_target; // 鐩爣缂栫爜鍣ㄥ€硷紙鑴夊啿鏁帮級
+    uint8_t command;       // 1=前进, 2=左转, 3=右转, 4=停止
+    int16_t pwm;           // 基础 PWM 值
+    int32_t encoder_target; // 目标编码器值（脉冲数）
 } TaskCommand;
  
-// 鍏ㄥ眬鍙橀噺澹版槑
-extern int32_t	current_encoder_values[4]; 		// M1, M2, M3, M4 鐨勫綋鍓嶇紪鐮佸櫒鍊?
+// 全局变量声明
+extern int32_t	current_encoder_values[4]; 		// M1, M2, M3, M4 的当前编码器值
 
 extern TaskCommand tasks5[];
 
-extern volatile uint8_t currentTaskSequence;          // 褰撳墠浠诲姟搴忓垪绱㈠紩锛?: tasks1, 1: tasks2, ...锛?
-extern volatile uint8_t currentStepIndex;             // 褰撳墠姝ラ绱㈠紩
+extern volatile uint8_t currentTaskSequence;          // 当前任务序列索引，0: tasks1, 1: tasks2, ...，2: tasks5
+extern volatile uint8_t currentStepIndex;             // 当前步骤索引
  
-// 鍑芥暟澹版槑
+// 函数声明
 //void Motion_Set_Speed(int16_t m1, int16_t m2, int16_t m3, int16_t m4);
 //int16_t Update_Motor_PWM(MotorID motor_id, int16_t current_pwm);
 //void Car_Control_Task(void);
@@ -119,3 +119,4 @@ void Motion_Send_Car_Type(void);
 void Car_Control_Task(void);
 
 #endif
+

@@ -1,16 +1,16 @@
 #include "app_math.h"
 
-//绉佹湁鍙橀噺鍖?
+//私有变量区
 const float MY_PI = 3.1415926535;
-const float RtA = 57.2957795f;   //寮у害锛坮adian锛夎浆瑙掑害锛坅ngle锛夌殑甯告暟
-const float AtR = 0.0174532925f; //瑙掑害杞姬搴︾殑甯告暟
-// 闄€铻轰华缂╂斁姣斾緥ratio锛欸yro_Gr = 1 / ratio / RtA
+const float RtA = 57.2957795f;   //弧度（radian）转角度（angle）的常数
+const float AtR = 0.0174532925f; //角度转弧度的常数
+// 陀螺仪缩放比例ratio：Gyro_Gr = 1 / ratio / RtA
 const float Gyro_G = 0.03051756f * 2;
-// const float Gyro_Gr = 0.0005326f * 2; // 瑙掗€熷害鍙樻垚寮у害	姝ゅ弬鏁板搴旈檧铻?000搴︽瘡绉?.0010653f
-const float Gyro_Gr = 0.00013323f * 2; // 瑙掗€熷害鍙樻垚寮у害	姝ゅ弬鏁板搴旈檧铻?00搴︽瘡绉?.00026646f
+// const float Gyro_Gr = 0.0005326f * 2; // 角速度变成弧度	此参数对应陀螺2000度每秒 0.0010653f
+const float Gyro_Gr = 0.00013323f * 2; // 角速度变成弧度	此参数对应陀螺500度每秒 0.00026646f
 const float PI_2 = 1.570796f;         //PI/2
 
-/* 杩斿洖姝ｅ鸡鍊硷紝x涓鸿搴﹀€?*/
+/* 返回正弦值，x为角度值 */
 float sine(float x) // (-M_PI , M_PI) ???? 0.0005
 {
     float Q = 0.775f;
@@ -21,13 +21,13 @@ float sine(float x) // (-M_PI , M_PI) ???? 0.0005
     return (Q * y + P * y * fabs(y));
 }
 
-/* 璁＄畻浣欏鸡鍊硷紝x涓鸿搴?/
+/* 计算余弦值，x为角度 */
 float cosine(float x)
 {
     return sine(x + MY_PI / 2);
 }
 
-/* 杩斿洖鍙嶆鍒囧€硷紝杈撳叆鍙嶆鍒囨暟鎹?*/
+/* 返回反正切值，输入反正切数据 */
 float arctan(float x) //  (-1 , +1)
 {
     float t = x;
@@ -45,7 +45,7 @@ float arctan(float x) //  (-1 , +1)
     return result;
 }
 
-/* 鍙嶆寮︽暟鎹?*/
+/* 反正弦数据 */
 float arcsin(float x)
 {
     float d = 1;
@@ -73,7 +73,7 @@ float arcsin(float x)
     return result;
 }
 
-/* 璁＄畻1/sqrt(x) */
+/* 计算1/sqrt(x) */
 float q_rsqrt(float number)
 {
     long i;
@@ -89,7 +89,7 @@ float q_rsqrt(float number)
     return y;
 }
 
-/* 鏁版嵁闄愬箙 */
+/* 数据限幅 */
 float data_limit(float data, float toplimit, float lowerlimit)
 {
     if(data > toplimit)
