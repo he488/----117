@@ -8,7 +8,7 @@
 //功能开关  0:关闭 1:打开
 #define LCD_SWITCH    0
 #define OLED_SWITCH		1
-#define HC595_SWITCH  1
+#define HC595_SWITCH  0   // 数码管（关闭，释放PA12给超声波TRIG使用）
 #define IMU_SWITCH 		0 
 #define FLASH_SWITCH  0 
 #define RGB_SWITCH		0

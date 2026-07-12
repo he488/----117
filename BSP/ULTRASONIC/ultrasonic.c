@@ -1,203 +1,150 @@
 #include "ultrasonic.h"
 
-/*记录定时器溢出次数*/
-unsigned int overcount = 0;
+/*============================================================================
+ * 超声波模块（HC-SR04）驱动
+ * 
+ * 引脚定义：
+ *   TRIG（触发）→ PA12（推挽输出）
+ *   ECHO（回响）→ PD2（浮空输入）
+ * 
+ * 工作原理：
+ *   1. TRIG 发送 10us 以上高电平，触发模块测距
+ *   2. 模块自动发送 8 个 40kHz 脉冲，检测回波
+ *   3. ECHO 输出高电平，宽度 = 声波往返时间
+ *   4. 距离 = 脉宽(us) / 58 (cm)
+ * 
+ * 计时方式：
+ *   使用软件循环 + delay_us(1) 进行计时，无需占用硬件定时器
+ *   避免与编码器 TIM2/3/4/5 冲突
+ *   精度 ±1cm，满足避障需求
+ *============================================================================*/
 
 /**
-* Function       Ultrasonic_GPIO_Init
-* @brief         超声波传感器GPIO初始化接口
-* @param[in]     void
-* @param[out]    void
-* @retval        void
-* @par History   无
-*/
+ * @brief  超声波 GPIO 初始化
+ * @param  无
+ * @retval 无
+ * @note   TRIG(PA12) 推挽输出，ECHO(PD2) 浮空输入
+ */
 void Ultrasonic_GPIO_Init(void)
 {
-
-	/*定义一个GPIO_InitTypeDef类型的结构体*/
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	/*开启外设时钟*/
-//	RCC_APB2PeriphClockCmd(TRIG_RCC | RCC_APB2Periph_AFIO, ENABLE); 
-//	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);  //禁能jtag
+	/*========== TRIG 触发引脚（PA12）= 推挽输出 ==========*/
+	RCC_APB2PeriphClockCmd(TRIG_RCC, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = TRIG_PIN;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(TRIG_PORT, &GPIO_InitStructure);
 
-		RCC_APB2PeriphClockCmd(TRIG_RCC, ENABLE);	
-	/*TRIG触发信号*/														   
-  	GPIO_InitStructure.GPIO_Pin = TRIG_PIN;	
-	/*设置引脚模式为通用推挽输出*/
-  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   
-	/*设置引脚速率为50MHz */   
-  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-	/*调用库函数，初始化*/
-  	GPIO_Init(TRIG_PORT, &GPIO_InitStructure);		 
+	/*========== ECHO 回响引脚（PD2）= 浮空输入 ==========*/
+	RCC_APB2PeriphClockCmd(ECHO_RCC, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = ECHO_PIN;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(ECHO_PORT, &GPIO_InitStructure);
 
-
-	/*开启外设时钟*/
-	RCC_APB2PeriphClockCmd(ECHO_RCC, ENABLE); 
-	/*ECOH回响信号*/															   
-  	GPIO_InitStructure.GPIO_Pin = ECHO_PIN;	
-	/*设置引脚模式为通用输入*/
-  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;   
-	/*设置引脚速率为50MHz */   
-  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-	/*调用库函数，初始化PORT*/
-  	GPIO_Init(ECHO_PORT, &GPIO_InitStructure);
-		
+	/* 初始状态：TRIG 拉低，ECHO 保持输入 */
+	GPIO_ResetBits(TRIG_PORT, TRIG_PIN);
 }
+
 
 /**
-* Function       Ultrasonic_Timer2_Init
-
-* @brief         初始化定时器TIM2
-* @param[in]     void
-* @param[out]    void
-* @return        距离浮点值
-* @par History   无
-*/
-
-void Ultrasonic_Timer2_Init(void)
-{
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructer;
-	NVIC_InitTypeDef NVIC_InitStructer;
-
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-	
-	/*定时器TIM2初始化*/
-	TIM_DeInit(TIM2);
-	TIM_TimeBaseInitStructer.TIM_Period = 999;//定时周期为1000
-	TIM_TimeBaseInitStructer.TIM_Prescaler = 71; //分频系数72
-	TIM_TimeBaseInitStructer.TIM_ClockDivision = TIM_CKD_DIV1;//不分频
-	TIM_TimeBaseInitStructer.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStructer);
-	
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);//开启更新中断
-
-	/*定时器中断初始化*/
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	
-	NVIC_InitStructer.NVIC_IRQChannelPreemptionPriority = 2;
-	NVIC_InitStructer.NVIC_IRQChannelSubPriority = 2;
-	NVIC_InitStructer.NVIC_IRQChannel = TIM2_IRQn;
-	NVIC_InitStructer.NVIC_IRQChannelCmd = ENABLE;
-	
-	NVIC_Init(&NVIC_InitStructer);
-	TIM_Cmd(TIM2, DISABLE);//关闭定时器使能
-
-}
-
-void TIM2_IRQHandler(void) //中断，当回响信号很长是，计数值溢出后重复计数，用中断来保存溢出次数
-{
-	if(TIM_GetITStatus(TIM2,TIM_IT_Update) != RESET)
-	{
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);//清除中断标志
-		overcount++;	
-	}
-}
-/**
-* Function       getUltrasonicDistance
-   
-* @brief         获取超声距离
-* @param[in]     void
-* @param[out]    void
-* @return        距离浮点值
-* @par History   无
-*/
-
+ * @brief  获取超声波测距结果（软件计时版）
+ * @param  无
+ * @retval 距离值（单位：cm），-1 表示超时/无物体
+ * @note   使用 delay_us(1) 循环计时，不占用硬件定时器
+ *         最大测量距离约 5m（对应脉宽 30ms）
+ *         精度约 ±1cm，满足避障使用
+ */
 float GetUltrasonicDistance(void)
 {
-	float length = 0, sum = 0;
-	u16 tim;
-//	u8  i = 0;
+	uint32_t cnt = 0;      // 脉宽计数
+	uint32_t timeout = 0;  // 超时计数
 
-	/*测5次数据计算一次平均值*/
-//	while(i != 5)
+	/*========== 1. 发送触发信号 ==========*/
+	/* TRIG 拉高 15us（要求 >10us），触发模块测距 */
+	GPIO_SetBits(TRIG_PORT, TRIG_PIN);
+	delay_us(15);
+	GPIO_ResetBits(TRIG_PORT, TRIG_PIN);
+
+	/*========== 2. 等待 ECHO 上升沿 ==========*/
+	/* 等待 ECHO 变为高电平，表示模块已发出超声波脉冲 */
+	timeout = 0;
+	while (GPIO_ReadInputDataBit(ECHO_PORT, ECHO_PIN) == RESET)
 	{
-		GPIO_SetBits(TRIG_PORT, TRIG_PIN);  //拉高信号，作为触发信号
-		delay_us(20);  						//高电平信号超过10us
-		GPIO_ResetBits(TRIG_PORT, TRIG_PIN);
-
-		/*等待回响信号*/
-		while(GPIO_ReadInputDataBit(ECHO_PORT, ECHO_PIN) == RESET);
-		TIM_Cmd(TIM2,ENABLE);//回响信号到来，开启定时器计数
-		
-//		i+=1; //每收到一次回响信号+1，收到5次就计算均值
-		while(GPIO_ReadInputDataBit(ECHO_PORT, ECHO_PIN) == SET);//回响信号消失
-		TIM_Cmd(TIM2, DISABLE);//关闭定时器
-		
-		tim = TIM_GetCounter(TIM2);//获取计TIM2数寄存器中的计数值，一边计算回响信号时间
-		
-		length = (tim + overcount * 1000) / 58.0;//通过回响信号计算距离
-		
-		sum = length + sum;
-		TIM2->CNT = 0;  //将TIM2计数寄存器的计数值清零
-		overcount = 0;  //中断溢出次数清零
-//		delay_ms(1);
+		delay_us(10);          // 每 10us 检查一次
+		timeout++;
+		if (timeout > 25000)   // 超时约 250ms
+		{
+			return -1;  // 无物体或模块未响应
+		}
 	}
-//	length = sum / 5;
-		length = sum;
-//	printf("CSB:%f",length );  	
-	return length;		//距离作为函数返回值
-	
+
+	/*========== 3. 测量 ECHO 高电平脉宽 ==========*/
+	/* ECHO 高电平宽度 = 声波往返时间，用软件循环计数 */
+	cnt = 0;
+	while (GPIO_ReadInputDataBit(ECHO_PORT, ECHO_PIN) == SET)
+	{
+		cnt++;
+		delay_us(1);           // 每次循环约 1.2us（delay_us(1) + 循环开销）
+		if (cnt > 30000)       // 超时约 30ms（对应距离约 5m）
+		{
+			return -1;  // 超出量程
+		}
+	}
+
+	/*========== 4. 距离计算 ==========*/
+	/* 实际脉宽 ≈ cnt × 1.2 (us)            */
+	/* 距离(cm) = 脉宽(us) / 58             */
+	/* 所以距离 ≈ cnt × 1.2 / 58 = cnt / 48.3 */
+	/* 使用 48.0 作为校准系数，精度约 ±1cm   */
+	return cnt / 48.0f;
 }
 
 
-
-//* Function       ultrasonic_servo_mode
-//* @brief         超声波避障
-//* @param[in]     void
-//* @param[out]    void
-//* @retval        void
-//* @par History   无
-//*/
+/**
+ * @brief  超声波 + 舵机避障模式（预留，当前未启用）
+ * @param  无
+ * @retval 无
+ * @note   需要配合舵机 J1（PB7）使用
+ *         通过舵机转动超声波模块，检测左、中、右三个方向距离
+ *         根据障碍物位置决策转向方向
+ */
 //void Ultrasonic_servo_mode(void)
 //{
 //	int Len = 0;
 //	int LeftDistance = 0, RightDistance = 0;
-
+//
 //	Len = (u16)GetUltrasonicDistance();
-//	 
-
-//    if(Len <= 30)//当遇到障碍物时
+//
+//    if(Len <= 30)  // 遇到障碍物（距离 < 30cm）
 //    {
-
-//		Motor_Stop();//停下来做测距
-//		
-//		Angle_J1 = 180;		// 左边
-//		delay_ms(500); //等待舵机到位
-//		Len = GetUltrasonicDistance();			
-//		LeftDistance = Len;	  
-//	 
-//		Angle_J1 = 0;		// 右边
-//		delay_ms(500); //等待舵机到位
-//		Len = GetUltrasonicDistance();					
+//		Motor_Stop();  // 停车
+//
+//		// 测量左侧距离（舵机转 180°）
+//		Angle_J1 = 180;
+//		delay_ms(500);
+//		Len = GetUltrasonicDistance();
+//		LeftDistance = Len;
+//
+//		// 测量右侧距离（舵机转 0°）
+//		Angle_J1 = 0;
+//		delay_ms(500);
+//		Len = GetUltrasonicDistance();
 //		RightDistance = Len;
-
-
-//		Angle_J1 = 90;		//归位
-//		delay_ms(500); //等待舵机到位
-
-//		if((LeftDistance < 22 ) &&( RightDistance < 22 ))//当左右两侧均有障碍物靠得比较近
+//
+//		// 归位（舵机回中 90°）
+//		Angle_J1 = 90;
+//		delay_ms(500);
+//
+//		// 决策：往距离远的方向转向
+//		if (LeftDistance > RightDistance)
 //		{
-//			SpinRight(7000);//旋转掉头
-//			delay_ms(600); //等待舵机到位
+//			// 左转
 //		}
-//		else if(LeftDistance >= RightDistance)//左边比右边空旷
-//		{      
-//			SpinLeft(7000);//左转
-//			delay_ms(400); //等待舵机到位
-//		}
-//		else//右边比左边空旷
+//		else
 //		{
-//			SpinRight(7000); //右转
-//			delay_ms(400); //等待舵机到位
+//			// 右转
 //		}
-//    }
-//		
-//    else if(Len > 30)//当遇到障碍物时
-//    {
-//		Forward(6000); 	 //无障碍物，直行     
 //    }
 //}
-
-

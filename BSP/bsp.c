@@ -47,9 +47,9 @@ void BSP_init(void)
 #endif
 
 #if Ultrasonic_SWITCH==1 && IRAvoid_SWITCH==0
-//	//超声波避障初始化
-//		Ultrasonic_GPIO_Init();
-//		Ultrasonic_Timer2_Init();
+//超声波避障初始化（软件计时，不占用定时器）
+		Ultrasonic_GPIO_Init();
+		// 注意：不使用 Ultrasonic_Timer2_Init()，改用软件计时避免与编码器冲突
 #elif Ultrasonic_SWITCH==0 && IRAvoid_SWITCH==1
 	IRAvoid_GPIO_Init();				/*红外避障传感器初始化*/
 #endif

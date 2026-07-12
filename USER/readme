@@ -20,7 +20,7 @@
 
   #define LCD_SWITCH          0    // LCD彩屏显示屏（关闭）
   #define OLED_SWITCH         1    // OLED单色显示屏（打开）
-  #define HC595_SWITCH        1    // 74HC595移位寄存器驱动数码管（打开）
+  #define HC595_SWITCH        0    // 74HC595数码管（关闭，释放PA12给超声波TRIG使用）
   #define IMU_SWITCH          0    // ICM20607陀螺仪/加速度计（关闭）
   #define FLASH_SWITCH        0    // W25Q64外部Flash存储器（关闭）
   #define RGB_SWITCH          0    // RGB彩灯（关闭）
@@ -122,10 +122,15 @@
   R（右）  →  GPIOC Pin13
   当前状态：three_LineWalking_SWITCH = 0（已关闭）
 
-【2.11 超声波避障模块（HC-SR04）】
-  TRIG（触发信号）  →  GPIOA Pin7
-  ECHO（回波信号）  →  GPIOA Pin6
-  当前状态：Ultrasonic_SWITCH = 1（已打开，但初始化代码被注释，实际未启用）
+【2.11 超声波测距模块（HC-SR04）】
+  TRIG（触发信号）  →  GPIOA Pin12  （推挽输出，发送10us以上高电平触发测距）
+  ECHO（回波信号）  →  GPIOD Pin2   （浮空输入，接收高电平脉冲，宽度对应距离）
+  当前状态：Ultrasonic_SWITCH = 1（已打开）
+  ★ 注意事项：
+    - 计时方式改为软件计时（delay_us循环），不占用硬件定时器
+    - 避免与编码器 TIM2/3/4/5 冲突
+    - 精度约 ±1cm，满足避障需求
+    - 需要关闭 HC595 数码管（HC595_SWITCH=0），释放 PA12 给 TRIG 使用
 
 【2.12 红外避障传感器】
   L1（左红外）  →  GPIOC Pin4
@@ -133,9 +138,10 @@
   当前状态：IRAvoid_SWITCH = 0（已关闭）
 
 【2.13 74HC595移位寄存器（驱动4位数码管）】
-  SER（串行数据）   →  GPIOA Pin12
+  SER（串行数据）   →  GPIOA Pin12  （已释放，被超声波TRIG占用）
   SCK（移位时钟）   →  GPIOA Pin13
   RCLK（锁存时钟）  →  GPIOA Pin14
+  当前状态：HC595_SWITCH = 0（已关闭，与超声波TRIG互斥，PA12已让给超声波使用）
 
 【2.14 RGB彩灯】
   RGB_R（红色）  →  GPIOC Pin0
