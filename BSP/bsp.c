@@ -74,6 +74,11 @@ void BSP_init(void)
 	icm20607_init();
 	LCD_Fill(0,0,LCD_W,LCD_H,WHITE); //清屏
 #endif
+
+#if BEEP_SWITCH
+	Beep_GPIO_Init(); //蜂鸣器初始化
+	Beep_Once();     //上电响一声，提示蜂鸣器正常工作
+#endif
 	
 	//基本定时器初始化
 

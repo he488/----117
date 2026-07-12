@@ -30,13 +30,16 @@
   #define CCD_SWITCH          0    // CCD摄像头循迹（关闭）
   #define Ultrasonic_SWITCH   1    // 超声波避障模块（打开）
   #define IRAvoid_SWITCH      0    // 红外避障模块（关闭）
-  #define three_LineWalking_SWITCH  0  // 三路巡线传感器（关闭）
-  #define LineWalking_SWITCH  0    // 四路巡线传感器（关闭）
-  #define PS2_SWITCH          0    // PS2手柄遥控（关闭）
+  #define three_LineWalking_SWITCH  0  // 三路巡线传感器（关闭，与四路巡线互斥）
+  #define LineWalking_SWITCH  1    // 四路巡线传感器（打开！使用PA2/PA3/PA4/PA5）
+  #define PS2_SWITCH          0    // PS2手柄遥控（关闭，与四路巡线互斥）
+  #define BEEP_SWITCH         0    // 蜂鸣器（关闭，需要时设为1打开）
   #define ENABLE_REAL_WHEEL   1    // 真实轮子速度计算（打开）
 
 【注意】
-  - ELE_SWITCH 和 CCD_SWITCH 只能同时打开一个，因为它们共用引脚。
+  - ELE_SWITCH 和 CCD_SWITCH 只能同时打开一个，因为它们共用 PA3/PA4/PA5。
+  - 四路巡线（LineWalking）也使用了 PA3/PA4/PA5，所以与 CCD 和电磁模块互斥，
+    打开四路巡线时必须关闭 CCD 和电磁（ELE_SWITCH=0, CCD_SWITCH=0）。
   - Ultrasonic_SWITCH 和 IRAvoid_SWITCH 只能同时打开一个。
   - three_LineWalking_SWITCH、LineWalking_SWITCH、PS2_SWITCH 只能同时打开一个。
 
@@ -103,12 +106,15 @@
   当前状态：ELE_SWITCH = 0（已关闭）
   引脚定义略（未启用）
 
-【2.9 四路巡线传感器】
-  L1（左1）  →  GPIOC Pin14
-  L2（左2）  →  GPIOC Pin13
-  R1（右1）  →  GPIOC Pin15
-  R2（右2）  →  GPIOA Pin12
-  当前状态：LineWalking_SWITCH = 0（已关闭）
+【2.9 四路红外巡线传感器】
+  ★ 从车尾往前看，传感器从左到右排列：L1 L2 |黑线| R1 R2
+  ★ 对应原理图：IN2 IN1 |黑线| IN3 IN4
+  ★ 全部使用 GPIOA 端口，上拉输入模式（GPIO_Mode_IPU）
+  L1（左1）  →  GPIOA Pin2  （红外检测输入，检测到黑线时输出低电平）
+  L2（左2）  →  GPIOA Pin3  （红外检测输入，检测到黑线时输出低电平）
+  R1（右1）  →  GPIOA Pin4  （红外检测输入，检测到黑线时输出低电平）
+  R2（右2）  →  GPIOA Pin5  （红外检测输入，检测到黑线时输出低电平）
+  当前状态：LineWalking_SWITCH = 1（已打开 ✅）
 
 【2.10 三路巡线传感器】
   L（左）  →  GPIOC Pin15
@@ -137,7 +143,16 @@
   RGB_B（蓝色）  →  GPIOC Pin2
   当前状态：RGB_SWITCH = 0（已关闭）
 
-【2.15 舵机】
+【2.15 蜂鸣器（有源蜂鸣器，低电平触发）】
+  BEEP（蜂鸣器控制）  →  GPIOB Pin5  （推挽输出，低电平响，高电平不响）
+  接线：蜂鸣器 VCC → 3.3V，蜂鸣器 GND → PB5，蜂鸣器 I/O → PB5
+  当前状态：BEEP_SWITCH = 0（已关闭，需要时设为1打开）
+  函数说明：
+  - Beep_Once()：响一声（约200ms）
+  - Beep_On_Time(ms)：响指定毫秒数
+  - Beep_N_Times(n)：响N次，每次200ms，间隔100ms
+
+【2.16 舵机】
   J1  →  GPIOB Pin7
   J2  →  GPIOB Pin6
   J3  →  GPIOB Pin6

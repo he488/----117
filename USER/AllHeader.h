@@ -23,9 +23,10 @@
 #define Ultrasonic_SWITCH  1
 #define IRAvoid_SWITCH  0
 
-#define three_LineWalking_SWITCH  0
-#define LineWalking_SWITCH  0
-#define PS2_SWITCH 0
+#define three_LineWalking_SWITCH  0  // 三路巡线传感器（关闭，与四路巡线互斥）
+#define LineWalking_SWITCH  1    // 四路巡线传感器（打开！使用PA2/PA3/PA4/PA5）
+#define PS2_SWITCH 0           // PS2手柄遥控（关闭，与四路巡线互斥）
+#define BEEP_SWITCH 0          // 蜂鸣器（关闭，需要时设为1打开）
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -73,6 +74,7 @@
 
 #include "oled.h"
 #include "bsp_timer.h"
+#include "bsp_beep.h"
 
 //APP文件下的函数
 /********外部flash相关*********/
@@ -86,6 +88,3 @@ void imu_test(void);
 
 
 #endif
-
-
-
