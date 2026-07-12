@@ -772,7 +772,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\BSP\icm20607\IOI2C.c</PathWithFileName>
+      <PathWithFileName>..\BSP\MPU6050\IOI2C.c</PathWithFileName>
       <FilenameWithoutPath>IOI2C.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

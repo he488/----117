@@ -1,8 +1,27 @@
-#ifndef __BSP_ICM20607_H__
-#define __BSP_ICM20607_H__
+#ifndef __BSP_MPU6050_H__
+#define __BSP_MPU6050_H__
 
 
 #include "AllHeader.h"
+
+/*============================================================================
+ * MPU6050 六轴传感器（陀螺仪 + 加速度计）
+ *
+ * 通信方式：软件 I2C（GPIO 模拟）
+ *
+ *   引脚定义：
+ *     SCL（时钟线）→  GPIOB Pin10  ←→ MPU6050 SCL
+ *     SDA（数据线）→  GPIOB Pin11  ←→ MPU6050 SDA
+ *     INT（中断）  →  GPIOB Pin13  ←  MPU6050 INT（数据就绪通知）
+ *
+ *   I2C 地址：
+ *     AD0 = GND → 0x68（左移 1 位 = 0xD0）
+ *     AD0 = VCC → 0x69（左移 1 位 = 0xD2）
+ *     当前配置：AD0 = GND（0x68 << 1 = 0xD0）
+ *============================================================================*/
+#define MPU6050_INT_PIN     GPIO_Pin_13   // MPU6050 中断引脚 PB13
+#define MPU6050_INT_PORT    GPIOB         // MPU6050 中断端口
+#define MPU6050_INT_RCC     RCC_APB2Periph_GPIOB  // 中断引脚时钟
 
 /* 向量 */
 typedef struct _vector_t
@@ -41,10 +60,10 @@ typedef struct _icm_data_t
 } icm_data_t;
 
 extern attitude_t g_attitude;
-extern icm_data_t g_icm20607;
+extern icm_data_t g_mpu6050;
 
-#define     ICM_ADDRESS        0x69<<1  //AD0:0即0x68<<1  1即0x69<<1
-#define     ICM20607_ID        0x05
+#define     MPU6050_ADDR       0x68<<1  // I2C 地址（AD0=GND → 0x68<<1）
+#define     MPU6050_ID         0x68     // WHO_AM_I 返回值（AD0=GND 时返回 0x68）
 #define     XG_OFFS_TC_H       0x04
 #define     XG_OFFS_TC_L       0x05
 #define     YG_OFFS_TC_H       0x07
@@ -113,8 +132,8 @@ extern icm_data_t g_icm20607;
 
 
 
-extern int16_t icm_gyro_x, icm_gyro_y, icm_gyro_z;
-extern int16_t icm_acc_x, icm_acc_y, icm_acc_z;
+extern int16_t mpu_gyro_x, mpu_gyro_y, mpu_gyro_z;
+extern int16_t mpu_acc_x, mpu_acc_y, mpu_acc_z;
 
 
 int16_t getRawGyroscopeX(void);
@@ -126,20 +145,20 @@ int16_t getRawAccelerationY(void);
 int16_t getRawAccelerationZ(void);
 
 
-void icm20607_init(void);
-void icm20607_who_am_i(void);
-void icm_get_gyro(void);
-void icm_get_acc(void);
+void mpu6050_init(void);
+void mpu6050_who_am_i(void);
+void mpu_get_gyro(void);
+void mpu_get_acc(void);
 
-void icm_update_data(void);
+void mpu_update_data(void);
 
-void get_icm_attitude(void);
+void get_mpu_attitude(void);
 
-void icm_test_start(void);
-void icm_test_stop(void);
+void mpu_test_start(void);
+void mpu_test_stop(void);
 
 
-void icm_check_calibrate(void);
+void mpu_check_calibrate(void);
 void get_attitude_angle(icm_data_t *p_icm, attitude_t *p_angle, float dt);
 
-#endif /* __BSP_ICM20607_H__ */
+#endif /* __BSP_MPU6050_H__ */

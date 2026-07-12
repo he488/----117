@@ -46,7 +46,7 @@
 
 #include "bsp_key.h"
 
-#include "bsp_icm20607.h"
+#include "bsp_mpu6050.h"  // MPU6050 六轴传感器
 #include "IOI2C.h"
 
 #include "lcd.h"

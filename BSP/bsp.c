@@ -70,8 +70,8 @@ void BSP_init(void)
 #endif
 
 #if IMU_SWITCH
-	//陀螺仪初始化
-	icm20607_init();
+	//陀螺仪初始化（MPU6050）
+	mpu6050_init();
 	LCD_Fill(0,0,LCD_W,LCD_H,WHITE); //清屏
 #endif
 

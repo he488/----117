@@ -21,13 +21,13 @@ void imu_test(void)
 //	int16_t val_ay = 0;
 //	int16_t val_az = 0;
 //	
-//	//陀螺仪测试
-		get_icm_attitude();
+//		imu_test();
+//		get_mpu_attitude();
 //		
 //			
-		val_gx = getRawGyroscopeX();
-		val_gy = getRawGyroscopeY();
-		val_gz = getRawGyroscopeZ();
+//		val_gx = getRawGyroscopeX();
+//		val_gy = getRawGyroscopeY();
+//		val_gz = getRawGyroscopeZ();
 //		
 //		
 //		//加速度
@@ -36,13 +36,11 @@ void imu_test(void)
 //		val_az = getRawAccelerationZ();
 //		
 //		
-		#if DEBUG_SWITCH
-			printf("gx=%d, gy=%d, gz=%d \r\n", val_gx, val_gy, val_gz);
-			//printf("ax=%d, ay=%d, az=%d \r\n", val_ax, val_ay, val_az);
-			//printf("accX = %d,accY=%d,accZ =%d\r\n",g_icm20607.accX,g_icm20607.accY,g_icm20607.accZ);
-		#endif
+//		#if DEBUG_SWITCH
+//			printf("gx=%d, gy=%d, gz=%d \r\n", val_gx, val_gy, val_gz);
+//			//printf("ax=%d, ay=%d, az=%d \r\n", val_ax, val_ay, val_az);
+//			//printf("accX = %d,accY=%d,accZ =%d\r\n",g_mpu6050.accX,g_mpu6050.accY,g_mpu6050.accZ);
+//		#endif
 
 
 }
-
-
