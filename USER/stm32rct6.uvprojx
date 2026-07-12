@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USER;..\CMSIS;..\FWLib\inc;..\BSP;..\BSP\MPU6050;..\BSP\LCD;..\BSP\RGB;..\BSP\w25q64;..\APP;..\BSP\UART;..\BSP\ELE_field;..\BSP\CCD;..\BSP\TIMER;..\BSP\motor;..\BSP\KEY;..\BSP\PID;..\BSP\IRAVOID;..\BSP\LINEWALKING;..\BSP\SERVO;..\BSP\ULTRASONIC;..\BSP\THREE_LINEWALKING;..\BSP\PS2_Control;..\BSP\OLED;..\BSP\HC595</IncludePath>
+              <IncludePath>..\USER;..\CMSIS;..\FWLib\inc;..\BSP;..\BSP\MPU6050;..\BSP\LCD;..\BSP\RGB;..\BSP\w25q64;..\APP;..\BSP\UART;..\BSP\ELE_field;..\BSP\CCD;..\BSP\TIMER;..\BSP\motor;..\BSP\KEY;..\BSP\PID;..\BSP\IRAVOID;..\BSP\LINEWALKING;..\BSP\SERVO;..\BSP\ULTRASONIC;..\BSP\THREE_LINEWALKING;..\BSP\PS2_Control;..\BSP\OLED;..\BSP\HC595;..\BSP\K210</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -639,6 +639,11 @@
               <FileName>oled.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\OLED\oled.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_k210.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\K210\bsp_k210.c</FilePath>
             </File>
           </Files>
         </Group>

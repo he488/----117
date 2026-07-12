@@ -1,4 +1,5 @@
 #include "bsp.h"
+#include "servo.h"
 
 void BSP_init(void)
 {
@@ -78,6 +79,14 @@ void BSP_init(void)
 #if BEEP_SWITCH
 	Beep_GPIO_Init(); //蜂鸣器初始化
 	Beep_Once();     //上电响一声，提示蜂鸣器正常工作
+#endif
+
+#if K210_SWITCH
+	K210_Init();     //K210视觉模块初始化（USART3，PC10-TX，PC11-RX）
+#endif
+
+#if SERVO_SWITCH
+    Servo_GPIO_Init();  // 舵机初始化（PC0/J1，PC1/J2）
 #endif
 	
 	//基本定时器初始化

@@ -27,6 +27,8 @@
 #define LineWalking_SWITCH  1    // 四路巡线传感器（打开！使用PA2/PA3/PA4/PA5）
 #define PS2_SWITCH 0           // PS2手柄遥控（关闭，与四路巡线互斥）
 #define BEEP_SWITCH 0          // 蜂鸣器（关闭，需要时设为1打开）
+#define K210_SWITCH 0          // K210视觉模块（关闭，使用USART3+PC10/PC11）
+#define SERVO_SWITCH        0    // 舵机（关闭，使用PC0/J1、PC1/J2，软件PWM）
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -75,6 +77,7 @@
 #include "oled.h"
 #include "bsp_timer.h"
 #include "bsp_beep.h"
+#include "bsp_k210.h"        // K210视觉模块（USART3，PC10/PC11）
 
 //APP文件下的函数
 /********外部flash相关*********/
