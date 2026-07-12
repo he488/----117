@@ -86,7 +86,11 @@ void BSP_init(void)
 #endif
 
 #if SERVO_SWITCH
-    Servo_GPIO_Init();  // 舵机初始化（PC0/J1，PC1/J2）
+    Servo_GPIO_Init();  // 舵机初始化（PC0/J1，PC1/J2，PC2/J3）
+#endif
+
+#if BLUETOOTH_SWITCH
+    Bluetooth_Init();  // HC-06蓝牙模块初始化（USART1，PA9-TX，PA10-RX）
 #endif
 	
 	//基本定时器初始化

@@ -35,6 +35,8 @@
   #define PS2_SWITCH          0    // PS2手柄遥控（关闭，与四路巡线互斥）
   #define BEEP_SWITCH         0    // 蜂鸣器（关闭，需要时设为1打开）
   #define K210_SWITCH         0    // K210视觉模块（关闭，使用USART3+PC10/PC11）
+  #define SERVO_SWITCH        0    // 舵机（关闭，使用PC0/J1、PC1/J2、PC2/J3，软件PWM）
+  #define BLUETOOTH_SWITCH    0    // HC-06蓝牙模块（关闭，使用USART1+PA9/PA10）
   #define ENABLE_REAL_WHEEL   1    // 真实轮子速度计算（打开）
 
 【注意】
@@ -159,27 +161,44 @@
   - Beep_On_Time(ms)：响指定毫秒数
   - Beep_N_Times(n)：响N次，每次200ms，间隔100ms
 
-【2.16 舵机】
-  ⚠️ 当前定义的引脚（PB6、PB7）已被编码器4占用，不可同时使用！
-  ★ 建议使用以下空闲引脚做舵机（软件PWM，50Hz，1~2ms脉宽）：
-     PC0（可接舵机信号线，如 J1）
-     PC1（可接舵机信号线，如 J2）
-     PC2（可接舵机信号线，如 J3）
-     PC3（备用）
+【2.16 舵机（软件PWM控制，TIM1定时器，仅J1/J2）】
+  ★ 引脚定义（已改为 PC0/PC1，原 PB6/PB7 被编码器4占用）：
+     J1（舵机1）  →  GPIOC Pin0  （软件 PWM，50Hz，1~2ms = 0°~180°）
+     J2（舵机2）  →  GPIOC Pin1  （软件 PWM，50Hz，1~2ms = 0°~180°）
+     J3（舵机3）  →  暂不使用（已注释，PC2 保留给其他模块）
   ★ 说明：
-     - PC0~PC3 当前由 RGB 彩灯占用，但 RGB_SWITCH=0 已关闭，引脚空闲可用
-     - 舵机控制采用软件 PWM（参考 RZ7899 的软件 PWM 方式），不占用硬件定时器
-     - 如需使用，需在 AllHeader.h 中添加舵机开关宏，并创建舵机初始化代码
-  当前状态：未配置（舵机代码暂未添加）
+     - PC0/PC1 原由 RGB 彩灯占用，但 RGB_SWITCH=0 已关闭，引脚空闲可用
+     - 采用 TIM1 定时器 + 软件 PWM 控制，不占用硬件 PWM 通道
+     - 如需使用，将 SERVO_SWITCH 设为 1
+     - 函数：Servo_J1(角度) 控制舵机角度，front_detection/left_detection/right_detection 控制云台
+  当前状态：SERVO_SWITCH = 0（已关闭，J3已注释，仅保留J1/J2）
 
-【2.16 PS2手柄遥控（SPI接口）】
+【2.17 HC-06 蓝牙模块（串口通信，USART1）】
+  ★ 通信方式：USART1 硬件串口，波特率 9600（HC-06 默认），8-N-1
+  ★ 引脚定义：
+     HC-06 TX（蓝牙发送 → STM32 接收）  →  GPIOA Pin10  （USART1 RX）
+     HC-06 RX（蓝牙接收 ← STM32 发送）  →  GPIOA Pin9   （USART1 TX）
+  ★ 接线方式：
+     HC-06 TX   →  STM32 PA10（USART1 RX）
+     HC-06 RX   →  STM32 PA9（USART1 TX）
+     HC-06 VCC  →  5V（或 3.3V，视 HC-06 模块而定）
+     HC-06 GND  →  GND
+  ★ 说明：
+     - USART1 原本用于调试输出（DEBUG_SWITCH），但 DEBUG_SWITCH=0 已关闭
+     - 当 DEBUG_SWITCH=1 时不可同时使用蓝牙（共用 USART1）
+     - HC-06 默认波特率 9600，可通过 AT 指令修改
+     - 支持函数：Bluetooth_SendString() 发送字符串，Bluetooth_GetByte() 非阻塞读取
+  ★ 当前状态：BLUETOOTH_SWITCH = 0（已关闭）
+  ★ 如需使用，在 AllHeader.h 中将 BLUETOOTH_SWITCH 设为 1
+
+【2.18 PS2手柄遥控（SPI接口）】
   MOSI（主机输出，从机输入）  →  GPIOC Pin15
   MISO（主机输入，从机输出）  →  GPIOC Pin14
   CS（片选）                  →  GPIOA Pin12
   SCK（时钟）                 →  GPIOC Pin13
   当前状态：PS2_SWITCH = 0（已关闭）
 
-【2.17 MPU6050 六轴传感器（陀螺仪+加速度计，I2C接口）】
+【2.19 MPU6050 六轴传感器（陀螺仪+加速度计，I2C接口）】
   ★ 软件 I2C 模拟通信，GPIO 引脚模拟 I2C 时序
   ★ 引脚定义：
       I2C_SCL（时钟线）  →  GPIOB Pin10  ←→ MPU6050 SCL
@@ -199,24 +218,25 @@
   【注意】W25Q64 Flash 的 SPI_SCK 也使用 PB13，但 FLASH_SWITCH=0 已关闭，无冲突。
   【注意】如果同时使用 Flash，需要改 MPU6050 INT 到其他空闲引脚（如 PA8、PC6）。
 
-【2.18 W25Q64 Flash存储器（SPI接口）】
+【2.20 W25Q64 Flash存储器（SPI接口）】
   SPI_CS（片选）    →  GPIOB Pin12
   SPI_SCK（时钟）   →  GPIOB Pin13
   SPI_MISO（主机输入）  →  GPIOB Pin14
   SPI_MOSI（主机输出）  →  GPIOB Pin15
   当前状态：FLASH_SWITCH = 0（已关闭）
 
-【2.19 串口通信（调试输出）】
-  ★ USART1（当前调试串口，波特率115200）：
-     TX（发送）  →  GPIOA Pin9
-     RX（接收）  →  GPIOA Pin10
+【2.21 串口通信（调试输出 / 蓝牙共用）】
+  ★ USART1（PA9-TX，PA10-RX）：
+     - DEBUG_SWITCH=1 时：作为调试串口，波特率 115200
+     - BLUETOOTH_SWITCH=1 时：作为 HC-06 蓝牙模块串口，波特率 9600
+     - 注意：两者不可同时使用（共用 USART1），当前 DEBUG_SWITCH=0
   ★ USART3：
      TX（发送）  →  GPIOC Pin10  （部分重映射，已被K210视觉模块使用）
      RX（接收）  →  GPIOC Pin11  （部分重映射，已被K210视觉模块使用）
      注意：USART3 默认引脚为 PB10（TX）/ PB11（RX），但已被 MPU6050 I2C 占用，
      所以使用部分重映射转到 PC10/PC11，当 K210_SWITCH=1 时启用。
 
-【2.20 调试接口】
+【2.22 调试接口】
   ★ SWD（串行调试口，当前使用的调试方式）：
      SWDIO  →  GPIOA Pin13
      SWCLK  →  GPIOA Pin14
@@ -224,7 +244,7 @@
      PA15（JTDI）、PB3（JTDO）、PB4（JNTRST）
      注意：PA13、PA14 仍保留为SWD调试口，不能用作普通IO
 
-【2.21 K210 视觉模块（串口通信，USART3 部分重映射）】
+【2.23 K210 视觉模块（串口通信，USART3 部分重映射）】
   ★ 通信方式：USART3 硬件串口，波特率 115200，8-N-1
   ★ 引脚定义：
      K210_TX（K210 发送 → STM32 接收）  →  GPIOC Pin11  （USART3 RX，部分重映射）

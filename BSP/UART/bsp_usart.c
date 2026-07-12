@@ -69,7 +69,8 @@ void USART1_Send_ArrayU8(uint8_t *BufferPtr, uint16_t Length)
 	}
 }
 
-//串口中断服务函数
+//串口中断服务函数（仅 DEBUG_SWITCH=1 时启用，蓝牙开关时使用 bsp_bluetooth.c 中的版本）
+#if DEBUG_SWITCH
 void USART1_IRQHandler(void)
 {
 	uint8_t Rx1_Temp = 0;
@@ -79,6 +80,7 @@ void USART1_IRQHandler(void)
 		USART1_Send_U8(Rx1_Temp);
 	}
 }
+#endif
 
 ///重定向c库函数printf到串口，重定向后可使用printf函数
 int fputc(int ch, FILE *f)
@@ -265,5 +267,3 @@ int fgetc(FILE *f)
 //		UART5_Send_U8(Rx5_Temp);
 //	}
 //}
-
-

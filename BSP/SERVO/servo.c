@@ -13,7 +13,7 @@
 /*使用定时器1驱动*/
 int Angle_J1 = 0;
 int Angle_J2 = 0;
-int Angle_J3 = 0;
+//int Angle_J3 = 0;   // J3暂不使用
 
 void Servo_GPIO_Init(void)
 {		
@@ -48,19 +48,19 @@ void Servo_GPIO_Init(void)
 		GPIO_Init(Servo_J2_PORT, &GPIO_InitStructure);		  		  
 #endif	
 	
-#ifdef USE_SERVO_J3
+//#ifdef USE_SERVO_J3   // J3暂不使用
 
-	/*开启外设时钟*/
-	RCC_APB2PeriphClockCmd(Servo_J3_RCC, ENABLE); 
-	/*选择要控制的引脚*/															   
-		GPIO_InitStructure.GPIO_Pin = Servo_J3_PIN;	
-	/*设置引脚模式为通用推挽输出*/
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   
-	/*设置引脚速率为50MHz */   
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-	/*调用库函数，初始化PORT*/
-		GPIO_Init(Servo_J3_PORT, &GPIO_InitStructure);		  		  
-#endif
+//	/*开启外设时钟*/
+//	RCC_APB2PeriphClockCmd(Servo_J3_RCC, ENABLE); 
+//	/*选择要控制的引脚*/															   
+//		GPIO_InitStructure.GPIO_Pin = Servo_J3_PIN;	
+//	/*设置引脚模式为通用推挽输出*/
+//		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   
+//	/*设置引脚速率为50MHz */   
+//		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
+//	/*调用库函数，初始化PORT*/
+//		GPIO_Init(Servo_J3_PORT, &GPIO_InitStructure);		  		  
+//#endif
 	
 }
 
@@ -207,14 +207,14 @@ void TIM1_UP_IRQHandler(void)   //TIM1中断
 			GPIO_ResetBits(Servo_J2_PORT, Servo_J2_PIN );		//将舵机接口电平置高
 		}
 
-		if(num <= (Angle_J3 * 11 + 500)/10)
-		{
-			GPIO_SetBits(Servo_J3_PORT, Servo_J3_PIN );		//将舵机接口电平置高
-		}
-		else
-		{
-			GPIO_ResetBits(Servo_J3_PORT, Servo_J3_PIN );		//将舵机接口电平置高
-		}		
+//		if(num <= (Angle_J3 * 11 + 500)/10)   // J3暂不使用
+//		{
+//			GPIO_SetBits(Servo_J3_PORT, Servo_J3_PIN );		//将舵机接口电平置高
+//		}
+//		else
+//		{
+//			GPIO_ResetBits(Servo_J3_PORT, Servo_J3_PIN );		//将舵机接口电平置高
+//		}		
 		
 		if(num == 2000)
 		{
@@ -223,4 +223,3 @@ void TIM1_UP_IRQHandler(void)   //TIM1中断
 		
 	}
 }
-
