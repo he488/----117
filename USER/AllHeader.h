@@ -28,7 +28,7 @@
 #define PS2_SWITCH 0           // PS2手柄遥控（关闭，与四路巡线互斥）
 #define BEEP_SWITCH 0          // 蜂鸣器（关闭，需要时设为1打开）
 #define K210_SWITCH 0          // K210视觉模块（关闭，使用USART3+PC10/PC11）
-#define SERVO_SWITCH 0          // 舵机（关闭，使用PC0/J1、PC1/J2、PC2/J3，软件PWM）
+#define SERVO_SWITCH 0          // 舵机（关闭，使用PC0/J1、PC1/J2，J3已注释）
 #define BLUETOOTH_SWITCH 0      // HC-06蓝牙模块（关闭，使用USART1+PA9/PA10）
 
 #include <stdio.h>
