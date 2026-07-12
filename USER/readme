@@ -48,8 +48,8 @@
 ============================================================
 
 【2.1 板载LED指示灯】
-  LED1  →  GPIOB Pin10  （推挽输出）
-  LED2  →  GPIOB Pin11  （推挽输出）
+  LED1  →  GPIOB Pin12  （推挽输出）
+  LED2  →  GPIOB Pin14  （推挽输出，即"LED灯"）
 
 【2.2 按键】
   KEY1  →  GPIOB Pin2   （输入模式）
@@ -75,11 +75,11 @@
      通道A  →  GPIOA Pin0  （TIM5 CH1）
      通道B  →  GPIOA Pin1  （TIM5 CH2）
   ★ 编码器2（对应电机M2 / L2）：
-     通道A  →  GPIOA Pin7  （TIM3 CH2）
-     通道B  →  GPIOA Pin6  （TIM3 CH1）
-  ★ 编码器3（对应电机M1 / L1）：
      通道A  →  GPIOA Pin15 （TIM2 CH1，重映射）
      通道B  →  GPIOB Pin3  （TIM2 CH2，重映射）
+  ★ 编码器3（对应电机M1 / L1）：
+     通道A  →  GPIOA Pin7  （TIM3 CH2）
+     通道B  →  GPIOA Pin6  （TIM3 CH1）
   ★ 编码器4（对应电机M3 / R1）：
      通道A  →  GPIOB Pin7  （TIM4 CH2）
      通道B  →  GPIOB Pin6  （TIM4 CH1）

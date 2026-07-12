@@ -10,19 +10,24 @@
 #define HAL_1B_PORT GPIOA
 #define HAL_1B_CLK RCC_APB2Periph_GPIOA
 
-#define HAL_2A_PIN GPIO_Pin_7
+// ★ 编码器2（对应电机M2 / L2）→ 互换后使用原编码器3的引脚
+//   通道A: GPIOA Pin15 (TIM2 CH1, 重映射)
+//   通道B: GPIOB Pin3  (TIM2 CH2, 重映射)
+#define HAL_2A_PIN GPIO_Pin_15
 #define HAL_2A_PORT GPIOA
 #define HAL_2A_CLK RCC_APB2Periph_GPIOA
-#define HAL_2B_PIN GPIO_Pin_6
-#define HAL_2B_PORT GPIOA
-#define HAL_2B_CLK RCC_APB2Periph_GPIOA
-//L2	R1
-#define HAL_3A_PIN GPIO_Pin_15
+#define HAL_2B_PIN GPIO_Pin_3
+#define HAL_2B_PORT GPIOB
+#define HAL_2B_CLK RCC_APB2Periph_GPIOB
+// ★ 编码器3（对应电机M1 / L1）→ 互换后使用原编码器2的引脚
+//   通道A: GPIOA Pin7  (TIM3 CH2)
+//   通道B: GPIOA Pin6  (TIM3 CH1)
+#define HAL_3A_PIN GPIO_Pin_7
 #define HAL_3A_PORT GPIOA
 #define HAL_3A_CLK RCC_APB2Periph_GPIOA
-#define HAL_3B_PIN GPIO_Pin_3
-#define HAL_3B_PORT GPIOB
-#define HAL_3B_CLK RCC_APB2Periph_GPIOB
+#define HAL_3B_PIN GPIO_Pin_6
+#define HAL_3B_PORT GPIOA
+#define HAL_3B_CLK RCC_APB2Periph_GPIOA
 //L1	R2
 #define HAL_4A_PIN GPIO_Pin_7
 #define HAL_4A_PORT GPIOB
@@ -50,4 +55,3 @@ void Encoder_Get_ALL(int32_t* Encoder_all);
 void Encoder_Send_Count_Now(void);
 
 #endif
-

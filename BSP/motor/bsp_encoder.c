@@ -7,7 +7,9 @@ int g_Encoder_M3_Now = 0;
 int g_Encoder_M4_Now = 0;
 
 
-// TIM2初始化为编码器接口模式， 3A 3B
+// TIM2初始化为编码器接口模式，对应编码器2（M2/L2）
+// 通道A: GPIOA Pin15 (TIM2 CH1, 重映射)
+// 通道B: GPIOB Pin3  (TIM2 CH2, 重映射)
 static void Encoder_Init_TIM2(void)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -51,7 +53,9 @@ static void Encoder_Init_TIM2(void)
 	TIM_Cmd(TIM2, ENABLE);
 }
 
-// 定时器3通道1通道2连接编码器2A 2B
+// 定时器3通道1通道2连接编码器3（M1/L1）
+// 通道A: GPIOA Pin7  (TIM3 CH2)
+// 通道B: GPIOA Pin6  (TIM3 CH1)
 static void Encoder_Init_TIM3(void)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -285,4 +289,3 @@ void Encoder_Init(void)
 	Encoder_Init_TIM5();       // M3 TIM5 PWMA HAL1
 	Encoder_Init_TIM3();       // M4 TIM3 PWMB HAL2
 }
-

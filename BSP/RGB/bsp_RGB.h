@@ -9,8 +9,9 @@
 #define RGB_LED_G_PIN GPIO_Pin_1
 #define RGB_LED_B_PIN GPIO_Pin_2
 
-#define LED1 PBout(10)
-#define LED2 PBout(11)
+// LED指示灯引脚定义
+#define LED1 PBout(12)   // LED1 → PB12
+#define LED2 PBout(14)   // LED2(LED灯) → PB14
 
 #define RGB_R PCout(0)
 #define RGB_G PCout(1)

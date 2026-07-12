@@ -9,7 +9,7 @@ int main(void)
 	//基本定时器初始化
 	TIM6_Init();//10MS
 	TIM7_Init();//1MS
-	GPIO_SetBits(GPIOB,GPIO_Pin_10|GPIO_Pin_11);//开LED
+	GPIO_SetBits(GPIOB,GPIO_Pin_12|GPIO_Pin_14);//开LED1(PB12)和LED2(PB14)
 	
 	while(1)
 	{		
@@ -63,5 +63,3 @@ int main(void)
 	}
 	
 }
-
-

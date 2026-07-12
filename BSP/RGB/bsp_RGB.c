@@ -18,14 +18,15 @@ void init_RGB_GPIO(void)
 void init_LED_GPIO(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
- 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);	 //使能C端口时钟
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11;	 
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;//速度2MHz
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);	  //初始化GPIOC
-	
- 	GPIO_ResetBits(GPIOB,GPIO_Pin_10|GPIO_Pin_11);
 
+	// 初始化LED1(PB12)和LED2(PB14)
+ 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);	 //使能GPIOB端口时钟
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12|GPIO_Pin_14;
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;         //速度2MHz
+ 	GPIO_Init(GPIOB, &GPIO_InitStructure);	                  //初始化GPIOB
+	
+ 	GPIO_ResetBits(GPIOB, GPIO_Pin_12|GPIO_Pin_14);         //默认关灯
 }	
 
 //设置 RGB灯 颜色
@@ -44,4 +45,3 @@ void RGB_control(u8 color)
 	}
 
 }
-
